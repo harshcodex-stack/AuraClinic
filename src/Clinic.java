@@ -101,13 +101,23 @@ public class Clinic {
     }
 
     //print invoice with tax
-    public void calculateAndPrintInvoice(Patient patient, Treatment treatment) {
+    public void calculateAndPrintInvoice(Patient patient, List<Treatment> treatments) {
         double taxRate = 0.025;
-        double total = treatment.getPrice() * (1 + taxRate);
+        double subtotal = 0.0;
+
         System.out.printf("Invoice for %s\n", patient.getName());
-        System.out.printf("Treatment: %s\n", treatment.getName());
-        System.out.printf("Subtotal: LKR %.2f\n", treatment.getPrice());
-        System.out.printf("Tax (2.5%%): LKR %.2f\n", treatment.getPrice() * taxRate);
+        System.out.println("Selected Treatments:");
+        for (Treatment treatment : treatments) {
+            System.out.printf(" - %s: LKR %.2f\n", treatment.getName(), treatment.getPrice());
+            subtotal += treatment.getPrice();
+        }
+
+        double tax = subtotal * taxRate;
+        double total = subtotal + tax;
+
+        System.out.printf("Subtotal: LKR %.2f\n", subtotal);
+        System.out.printf("Tax (2.5%%): LKR %.2f\n", tax);
         System.out.printf("Total: LKR %.2f\n", Math.ceil(total * 100) / 100);
     }
+
 }

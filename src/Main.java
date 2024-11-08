@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.List;
 
@@ -155,35 +156,41 @@ public class Main {
     }
 
     private static void generateInvoice() {
-        System.out.print("Enter patient NIC for invoice generation: ");
-        String patientNic = scanner.nextLine();
-        Patient patient = clinic.getPatient(patientNic);
+        System.out.print("Enter patient ID for invoice generation: ");
+        String patientId = scanner.nextLine();
+        Patient patient = clinic.getPatient(patientId);
         if (patient == null) {
             System.out.println("Patient not found.");
             return;
         }
 
-        System.out.println("Available treatments:");
-        System.out.println("1. Acne Treatment - LKR 2750.00");
-        System.out.println("2. Skin Whitening - LKR 7650.00");
-        System.out.println("3. Mole Removal - LKR 3850.00");
-        System.out.println("4. Laser Treatment - LKR 12500.00");
-        System.out.print("Select treatment (enter number): ");
-        int treatmentChoice = scanner.nextInt();
-        scanner.nextLine();
+        List<Treatment> selectedTreatments = new ArrayList<>();
 
-        Treatment treatment;
-        switch (treatmentChoice) {
-            case 1 -> treatment = new Treatment("Acne Treatment", 2750.00);
-            case 2 -> treatment = new Treatment("Skin Whitening", 7650.00);
-            case 3 -> treatment = new Treatment("Mole Removal", 3850.00);
-            case 4 -> treatment = new Treatment("Laser Treatment", 12500.00);
-            default -> {
-                System.out.println("Invalid treatment selection.");
-                return;
+        boolean addMoreTreatments = true;
+        while (addMoreTreatments) {
+            System.out.println("Available treatments:");
+            System.out.println("1. Acne Treatment - LKR 2750.00");
+            System.out.println("2. Skin Whitening - LKR 7650.00");
+            System.out.println("3. Mole Removal - LKR 3850.00");
+            System.out.println("4. Laser Treatment - LKR 12500.00");
+            System.out.print("Select treatment (enter number, or 0 to finish): ");
+            int treatmentChoice = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (treatmentChoice) {
+                case 1 -> selectedTreatments.add(new Treatment("Acne Treatment", 2750.00));
+                case 2 -> selectedTreatments.add(new Treatment("Skin Whitening", 7650.00));
+                case 3 -> selectedTreatments.add(new Treatment("Mole Removal", 3850.00));
+                case 4 -> selectedTreatments.add(new Treatment("Laser Treatment", 12500.00));
+                case 0 -> addMoreTreatments = false;
+                default -> System.out.println("Invalid treatment selection.");
             }
         }
 
-        clinic.calculateAndPrintInvoice(patient, treatment);
+        if (selectedTreatments.isEmpty()) {
+            System.out.println("No treatments selected.");
+        } else {
+            clinic.calculateAndPrintInvoice(patient, (List<Treatment>) selectedTreatments);
+        }
     }
 }
